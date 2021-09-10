@@ -90,6 +90,14 @@ export default theme
 Adaptation chakra ui + theme to demo page.
 
 
+## Markdown in chakra
+
+```
+yarn add @chakra-ui/icons chakra-ui-markdown-renderer react-markdown react-icons gray-matter react-syntax-highlighter
+yarn add @types/react @types/react-syntax-highlighter
+```
+
+
 
 
 
