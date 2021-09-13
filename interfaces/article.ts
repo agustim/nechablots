@@ -1,6 +1,6 @@
 interface ArticleMeta {
     title: string;
-    slug: string;
+    slug?: string;
     description: string;
     thumbnail: string;
     creator: string;

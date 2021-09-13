@@ -57,14 +57,5 @@ export const getStaticPaths: GetStaticPaths = async () => {
         }
     }
     
-  /*  const postFilenames = getPostsFiles();
-    const slugs = postFilenames.map((fileName) =>
-        fileName.replace(/\.md$/, "")
-    );
-    return {
-        paths: slugs.map((slug) => ({ params: { slug: slug } })),
-        fallback: false,
-    };
-};*/
 
 export default Article;
