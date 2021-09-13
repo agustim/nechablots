@@ -3,6 +3,7 @@ interface ArticleMeta {
     slug: string;
     description: string;
     thumbnail: string;
+    creator: string;
 }
 
 interface ArticleInfo {

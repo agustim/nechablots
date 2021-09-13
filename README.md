@@ -97,6 +97,39 @@ yarn add @chakra-ui/icons chakra-ui-markdown-renderer react-markdown react-icons
 yarn add @types/react @types/react-syntax-highlighter
 ```
 
+## Add new field in "article" register.
+
+This is simple, add interface new field, in this case, add 'creator' field ( interfaces/articles.ts )
+``` ts
+interface ArticleMeta {
+    title: string;
+    slug: string;
+    description: string;
+    thumbnail: string;
+    creator: string;
+}
+```
+Add, in all contents a new field in first block, like ( contents/*.mdx)
+```
+---
+title: Second content
+description: Bon cap de setmana
+thumbnail: https://static.wixstatic.com/media/56fc9d_cf53c73a211d465fa52af8b073e31400~mv2.png
+creator: John Smith
+---
+```
+Show, if you want, new field in card articles ( components/article-card.tsx)
+``` ts
+...
+              <chakra.span
+                fontSize="xs"
+                textTransform="uppercase"
+                color={useColorModeValue("brand.600", "brand.400")}
+              >
+                {article.meta.creator}
+              </chakra.span>
+...
+```
 
 
 

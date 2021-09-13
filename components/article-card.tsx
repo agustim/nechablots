@@ -40,7 +40,7 @@ const Cards: FunctionComponent<IProps> = ({article}) => {
                 textTransform="uppercase"
                 color={useColorModeValue("brand.600", "brand.400")}
               >
-                Product
+                {article.meta.creator}
               </chakra.span>
               <Link
                 display="block"
