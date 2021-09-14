@@ -23,8 +23,8 @@ export default async function handler(
     const article = {
         meta: {
             ...result.data,
-            slug
         },
+        slug,
         content: result.content
     } as ArticleInfo
 

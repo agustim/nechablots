@@ -1,5 +1,4 @@
 import type { FC } from 'react'
-import useSWR from 'swr'
 import { Box, SimpleGrid, Text, Heading, GridItem, chakra, Stack, 
          Alert, AlertIcon, AlertStatus, AlertTitle, AlertDescription, CloseButton,
          FormControl, FormLabel, FormHelperText, Input, Textarea, Button } from '@chakra-ui/react'
@@ -7,7 +6,6 @@ import { ArticleInfo, ArticleMeta } from '../../interfaces/article'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { useEffect } from 'react'
-import { route } from 'next/dist/server/router'
 
 interface Props {
   article: ArticleInfo
@@ -28,6 +26,7 @@ const ArticleForm: FC<Props> = () => {
   const { slug } = router.query;
   
   var article:ArticleInfo =  ({} as any) as ArticleInfo;
+
 
   var alertMissatgeBlank:AlertMessage = ( {isVisible: false, status: 'info', title: '', message: ''}) as AlertMessage
 
@@ -60,6 +59,8 @@ const ArticleForm: FC<Props> = () => {
     var meta:ArticleMeta = { ...formData.meta}
     if (e.currentTarget.id == "content") {
       art.content = e.currentTarget.value
+    } else if (e.currentTarget.id == "slug") {
+      art.slug = e.currentTarget.value
     } else {
       meta = {
         ...meta,
@@ -93,7 +94,7 @@ const ArticleForm: FC<Props> = () => {
     .then(res => res.json())
     .then((data) => {
       if (data.ok) {
-        const mess = (slug === formData.meta.slug) 
+        const mess = (slug === formData.slug) 
           ? "S'ha actualitzat correctament el registre."
           : "S'ha canviat el nom del registre i si no hi havia cap amb aquest nom, s'ha creat un nou registre."
         showMessage("success", "Registre guardat", mess)
@@ -153,34 +154,58 @@ const ArticleForm: FC<Props> = () => {
               p={[null, 6]}
               spacing={6}
             >
-                <SimpleGrid columns={6} spacing={6}>
-                {
-                  Object.keys(formData?.meta ?? {}).map((field, i) => {
-                    const fieldName = formData?.meta[field] ?? ""
-                    return (
-                      <FormControl key={i} as={GridItem} colSpan={[6, 3]}>
-                    <FormLabel
-                      htmlFor={field}
-                      fontSize="sm"
-                      fontWeight="md"
-                      >
-                      {field}
-                    </FormLabel>
-                    <Input
-                      type="text"
-                      name={field}
-                      id={field}
-                      autoComplete="given-name"
-                      mt={1}
-                      focusBorderColor="brand.400"
-                      shadow="sm"
-                      size="sm"
-                      w="full"
-                      rounded="md"
-                      value={fieldName}
-                      onChange={handleForm}
-                      />
-                  </FormControl>
+              <SimpleGrid columns={6} spacing={6}>
+              <FormControl as={GridItem} colSpan={[6, 3]}>
+                      <FormLabel
+                        htmlFor="slug"
+                        fontSize="sm"
+                        fontWeight="md"
+                        >
+                        Filename
+                      </FormLabel>
+                      <Input
+                        type="text"
+                        name="slug"
+                        id="slug"
+                        autoComplete="given-name"
+                        mt={1}
+                        focusBorderColor="brand.400"
+                        shadow="sm"
+                        size="sm"
+                        w="full"
+                        rounded="md"
+                        value={formData.slug}
+                        onChange={handleForm}
+                        />
+                </FormControl>
+
+              {
+                Object.keys(formData?.meta ?? {}).map((field, i) => {
+                  const fieldName = formData?.meta[field] ?? ""
+                  return (
+                    <FormControl key={i} as={GridItem} colSpan={[6, 3]}>
+                      <FormLabel
+                        htmlFor={field}
+                        fontSize="sm"
+                        fontWeight="md"
+                        >
+                        {field}
+                      </FormLabel>
+                      <Input
+                        type="text"
+                        name={field}
+                        id={field}
+                        autoComplete="given-name"
+                        mt={1}
+                        focusBorderColor="brand.400"
+                        shadow="sm"
+                        size="sm"
+                        w="full"
+                        rounded="md"
+                        value={fieldName}
+                        onChange={handleForm}
+                        />
+                    </FormControl>
                   )
                 })
               }

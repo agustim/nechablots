@@ -34,8 +34,8 @@ export default async function handler(
     const params = req.body
     try {
         const article: ArticleInfo = params
-        filename = "/" + article.meta.slug + ".mdx"
-        delete article.meta.slug
+        filename = "/" + article.slug + ".mdx"
+        //delete article.slug
 
         matterObject = matter.stringify(
                 article.content,
