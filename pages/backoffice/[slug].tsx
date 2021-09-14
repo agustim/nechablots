@@ -29,7 +29,7 @@ const ArticleForm: FC<Props> = () => {
   
   var article:ArticleInfo =  ({} as any) as ArticleInfo;
 
-  var alertMissatgeBlank:AlertMessage = ( {isVisible: false, icon: 'info', title: '', message: ''}) as AlertMessage
+  var alertMissatgeBlank:AlertMessage = ( {isVisible: false, status: 'info', title: '', message: ''}) as AlertMessage
 
   const [formData, setFormData] = useState(article)
   const [visible, setVisible] = useState(false)
