@@ -1,7 +1,5 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import Ghdb from '../../../lib/Ghdb'
-import matter from 'gray-matter'
 
 
 type Articles = string[]

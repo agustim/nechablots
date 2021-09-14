@@ -43,6 +43,7 @@ export async function getStaticProps({ ...ctx }) {
     }
 }
 
+
 export const getStaticPaths: GetStaticPaths = async () => {
         const files = fs.readdirSync(contentDirectory);
         const paths = files.map(file => ({
@@ -56,6 +57,5 @@ export const getStaticPaths: GetStaticPaths = async () => {
             fallback: false,
         }
     }
-    
 
 export default Article;
