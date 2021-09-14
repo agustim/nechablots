@@ -24,17 +24,17 @@ export default async function handler(
         return
     }
 
-    if ((!req.body) || (!req.body.article)) {
+    if (!req.body) {
         res.statusCode = 401
         res.json({error:"Article parameter is not defined."})
         return       
     }
 
     var matterObject, filename
-    const params = req.body.article
+    const params = req.body
     try {
-        const article: ArticleInfo = JSON.parse(params)
-        filename = article.meta.slug + ".mdx"
+        const article: ArticleInfo = params
+        filename = "/" + article.meta.slug + ".mdx"
         delete article.meta.slug
 
         matterObject = matter.stringify(
@@ -60,7 +60,9 @@ export default async function handler(
         branch: process.env.GH_BRANCH 
     })
 
-    const result = await ghdb.lowWriteGithub(filename, matterObject )
+   const result = await ghdb.lowWriteGithub(filename, matterObject )
+
+   // const result = JSON.stringify(matterObject)
     
     res.status(200).json({ ok: result })
 }

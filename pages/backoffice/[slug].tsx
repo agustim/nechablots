@@ -1,10 +1,11 @@
 import type { FC } from 'react'
 import useSWR from 'swr'
 import { Box, SimpleGrid, Text, Heading, GridItem, chakra, Stack, 
-         useColorModeValue, FormControl, FormLabel, FormHelperText, Input, Textarea, Button } from '@chakra-ui/react'
+         Alert, AlertIcon, AlertStatus, AlertTitle, AlertDescription, CloseButton,
+         FormControl, FormLabel, FormHelperText, Input, Textarea, Button } from '@chakra-ui/react'
 import { ArticleInfo, ArticleMeta } from '../../interfaces/article'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useEffect } from 'react'
 import { route } from 'next/dist/server/router'
 
@@ -12,31 +13,15 @@ interface Props {
   article: ArticleInfo
 }
 
-const fetcher = (url:string) => fetch(url).then(res => res.json())
-const baseUrl = "http://localhost:3000"
-
-/*
-export async function getStaticProps({ ...ctx }) {
-  const { slug } = ctx.params;
-  const url = baseUrl + `/api/articles/${slug}`
-  const data  = await fetcher( url )
-
-  return {
-      props: {
-          article: data
-      }
-  }
+interface AlertMessage {
+  isVisible: boolean,
+  status: AlertStatus,
+  title: string,
+  message: string
 }
 
-export async function getStaticPaths() {
+const baseUrl = ""
 
-  return {
-    fallback: true,
-    paths: [
-      {params : { slug: ""  } }
-    ]
-  }
-}*/
 const ArticleForm: FC<Props> = () => {
   
   const router = useRouter()
@@ -44,30 +29,35 @@ const ArticleForm: FC<Props> = () => {
   
   var article:ArticleInfo =  ({} as any) as ArticleInfo;
 
+  var alertMissatgeBlank:AlertMessage = ( {isVisible: false, icon: 'info', title: '', message: ''}) as AlertMessage
+
   const [formData, setFormData] = useState(article)
   const [visible, setVisible] = useState(false)
+  const [alert, setAlert] = useState(alertMissatgeBlank)
 
-  useEffect(()=>{
+  useEffect(() => {
     if (slug) {
-      console.log("useEffect")
       const url = baseUrl + `/api/articles/${slug}`
       fetch( url )
       .then(res => res.json())
       .then((data) => {
         setFormData(data)
-        article = {...data}
-        console.log(article)
         setVisible(true)
       })
       .catch(error => console.error(error))
     }
   },[slug])
   
+  const showMessage = (status: AlertStatus, title: string, message: string) => {
+    setAlert({isVisible: true, status, title, message})
+  }
+  const hiddenMessage= () => {
+    setAlert({isVisible: false, status: 'info', title:'',  message:''})
+  }
 
-  const handleForm = (e: React.FormEvent<HTMLInputElement>): void => {
-
-    var art:ArticleInfo = { ...article }
-    var meta:ArticleMeta = { ...article.meta}
+  const handleForm = (e: any): void => {
+    var art:ArticleInfo = { ...formData }
+    var meta:ArticleMeta = { ...formData.meta}
     if (e.currentTarget.id == "content") {
       art.content = e.currentTarget.value
     } else {
@@ -82,7 +72,41 @@ const ArticleForm: FC<Props> = () => {
     })
   }
 
-  //const keysOfArticle = Object.keys(formData?.meta ?? {}) 
+  const updateForm = (): void => {
+    // Prepare object to update
+
+    const data = {
+      ...formData
+    }
+    const url = baseUrl + `/api/articles/update`
+    fetch(url, {
+      method: 'POST', 
+      cache: 'no-cache', 
+      credentials: 'same-origin', 
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      redirect: 'follow', 
+      referrerPolicy: 'no-referrer', 
+      body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then((data) => {
+      if (data.ok) {
+        const mess = (slug === formData.meta.slug) 
+          ? "S'ha actualitzat correctament el registre."
+          : "S'ha canviat el nom del registre i si no hi havia cap amb aquest nom, s'ha creat un nou registre."
+        showMessage("success", "Registre guardat", mess)
+      } else {
+        showMessage("error", "Error no esperat!", JSON.stringify(data))
+        console.log(data)
+      }
+    })
+    .catch(error => {
+      console.error(error)
+      showMessage("error", "Error no esperat!", error.toString())
+    })
+  }
 
   return (
       <Box mt={[10, 0]}>
@@ -91,6 +115,18 @@ const ArticleForm: FC<Props> = () => {
         columns={{ md: 3 }}
         spacing={{ md: 6 }}
       >
+      { (alert.isVisible) && (
+      <Alert status={alert.status}>
+      <AlertIcon />
+      <Box flex="1">
+        <AlertTitle>{alert.title}</AlertTitle>
+        <AlertDescription display="block">
+          {alert.message}
+        </AlertDescription>
+      </Box>
+      <CloseButton position="absolute" right="8px" top="8px" onClick={hiddenMessage}/>
+    </Alert>
+      )}
         <GridItem colSpan={{ md: 1 }}>
           <Box px={[4, 0]}>
             <Heading fontSize="lg" fontWeight="medium" lineHeight="6">
@@ -161,10 +197,12 @@ const ArticleForm: FC<Props> = () => {
                       id="content"
                       name="content"
                       mt={1}
-                      rows={3}
+                      rows={20}
                       shadow="sm"
                       focusBorderColor="brand.400"
                       fontSize={{ sm: "sm" }}
+                      value={formData.content}
+                      onChange={handleForm}
                       />
                     <FormHelperText>
                       Content with Markdown format.
@@ -176,16 +214,15 @@ const ArticleForm: FC<Props> = () => {
             <Box
               px={{ base: 4, sm: 6 }}
               py={3}
-              bg={useColorModeValue("gray.50", "gray.900")}
               textAlign="right"
             >
-              <Button
-                type="submit"
-                colorScheme="brand"
-                _focus={{ shadow: "" }}
-                fontWeight="md"
-              >
-                Save
+              <Button 
+               colorScheme="purple"
+               _focus={{ shadow: "" }}
+               fontWeight="md"
+               onClick={updateForm}
+               >
+                Update
               </Button>
             </Box>
           </chakra.form>
