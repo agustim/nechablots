@@ -1,6 +1,6 @@
 // /pages/posts/[slug].tsx
 
-import { FC, Fragment } from "react";
+import { FC } from "react";
 import { GetStaticPaths } from "next";
 import fs from 'fs';
 import { ArticleInfo } from "../../interfaces/article";
@@ -31,8 +31,8 @@ export async function getStaticProps({ ...ctx }) {
     const article = {
         meta: {
             ...info.data,
-            slug
         },
+        slug,
         content: info.content
     }
 

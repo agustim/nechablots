@@ -1,9 +1,8 @@
 import type { FunctionComponent } from 'react'
 import styles from '../styles/Home.module.css'
-import { Box, Link, Heading, Code  } from '@chakra-ui/react'
+import { Box, Heading } from '@chakra-ui/react'
 import ArticleLink from '../components/article-link'
 import { ArticleInfo } from '../interfaces/article'
-import Article from './article/[slug]'
 import fs from 'fs'
 import matter from 'gray-matter'
 
@@ -47,8 +46,8 @@ export async function getStaticProps() {
           const article = {
             meta: {
               ...info.data,
-              slug: file.split('.')[0]
             },
+            slug: file.split('.')[0],
             content: info.content
           }
 

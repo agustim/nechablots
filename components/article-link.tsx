@@ -58,7 +58,7 @@ const Cards: FunctionComponent<IProps> = ({article}) => {
 
 const ArticleLink: FunctionComponent<IProps> = ({ article }) => {
     return ( 
-        <Link href={`/article/${article.meta.slug}`}>
+        <Link href={`/article/${article.slug}`}>
             <Cards article={article} />
         </Link>
     )
