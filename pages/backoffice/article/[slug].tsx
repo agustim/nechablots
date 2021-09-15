@@ -2,7 +2,7 @@ import type { FC } from 'react'
 import { Box, SimpleGrid, Text, Heading, GridItem, chakra, Stack, 
          Alert, AlertIcon, AlertStatus, AlertTitle, AlertDescription, CloseButton,
          FormControl, FormLabel, FormHelperText, Input, Textarea, Button } from '@chakra-ui/react'
-import { ArticleInfo, ArticleMeta } from '../../interfaces/article'
+import { ArticleInfo, ArticleMeta } from '../../../interfaces/article'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { useEffect } from 'react'
